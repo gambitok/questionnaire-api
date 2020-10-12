@@ -30,7 +30,9 @@ class QuestionController extends Controller
     {
         if (Question::where('secret', $id)->exists()) {
             $question = Question::where('secret', $id)->get()->toJson(JSON_PRETTY_PRINT);
+//            $question = Question::where('secret', $id)->get();
             return response($question, 200);
+//            return view('questions/show')->with('question', $question);
         } else {
             return response()->json([
                 "message" => "Question not found"
