@@ -14,6 +14,22 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::get('questions',
+    'App\Http\Controllers\Api\QuestionController@index'
+);
+
+Route::post('questions',
+    'App\Http\Controllers\Api\QuestionController@store'
+);
+
+Route::put('questions/{id}',
+    'App\Http\Controllers\Api\QuestionController@update'
+);
+
+Route::delete('questions/{id}',
+    'App\Http\Controllers\Api\QuestionController@destroy'
+);
+
+Route::get('questions/{secret}',
+    'App\Http\Controllers\Api\QuestionController@show'
+);
