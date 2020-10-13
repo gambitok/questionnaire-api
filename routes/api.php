@@ -34,6 +34,10 @@ Route::get('questions/{secret}',
     'App\Http\Controllers\Api\QuestionController@show'
 );
 
+Route::post('questions/{secret}',
+    'App\Http\Controllers\Api\QuestionController@show'
+);
+
 //Route::post('questions/{secret}',
 //    'App\Http\Controllers\Api\AnswerController@store'
 //);
