@@ -49,7 +49,7 @@ class QuestionController extends Controller
         $question = new Question;
         $question->name = is_null($request->name) ? 'empty' : $request->name;
         do {
-            $secret = Str::random(1);
+            $secret = Str::random(10);
         } while (Question::where("secret", "=", $secret)->first());
         $question->secret = $secret;
 
@@ -67,7 +67,7 @@ class QuestionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if (Question::where('id', $id)->exists()) {
+        if (Question::where('question_id', $id)->exists()) {
             $question = Question::find($id);
 
             $question->name = is_null($request->name) ? $question->name : $request->name;
@@ -89,7 +89,7 @@ class QuestionController extends Controller
      */
     public function destroy($id)
     {
-        if(Question::where('id', $id)->exists()) {
+        if(Question::where('question_id', $id)->exists()) {
             $question = Question::find($id);
             $question->delete();
 
