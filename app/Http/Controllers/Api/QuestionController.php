@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Question;
+use App\Models\Answer;
 use Illuminate\Support\Str;
 
 /**
@@ -18,7 +19,11 @@ class QuestionController extends Controller
      */
     public function index()
     {
-        $questions = Question::get()->toJson(JSON_PRETTY_PRINT);
+        $questions = Question::get();
+        foreach ($questions as $question) {
+            $answers = Answer::where('question_id', $question->question_id)->get();
+            empty($answers) ?: $question["answers"] = $answers;
+        }
         return response($questions, 200);
     }
 
@@ -50,7 +55,7 @@ class QuestionController extends Controller
         $question->name = is_null($request->name) ? 'empty' : $request->name;
         do {
             $secret = Str::random(10);
-        } while (Question::where("secret", "=", $secret)->first());
+        } while (Question::where("secret", $secret)->first());
         $question->secret = $secret;
 
         $question->save();

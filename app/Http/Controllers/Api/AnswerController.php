@@ -18,7 +18,7 @@ class AnswerController extends Controller
      */
     public function index()
     {
-        $answers = Answer::get()->toJson(JSON_PRETTY_PRINT);
+        $answers = Answer::get();
         return response($answers, 200);
     }
 
