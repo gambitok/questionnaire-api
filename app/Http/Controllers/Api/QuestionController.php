@@ -14,11 +14,13 @@ use Illuminate\Support\Str;
  */
 class QuestionController extends Controller
 {
+
     /**
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        $this->authen($request);
         $questions = Question::get();
         foreach ($questions as $question) {
             $answers = Answer::where('question_id', $question->question_id)->get();
@@ -31,7 +33,7 @@ class QuestionController extends Controller
      * @param $id
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\JsonResponse|\Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
         if (Question::where('secret', $id)->exists()) {
             $question = Question::where('secret', $id)->get();
@@ -49,6 +51,7 @@ class QuestionController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authen($request);
         $question = new Question;
         $question->name = is_null($request->name) ? 'empty' : $request->name;
         do {
@@ -70,6 +73,7 @@ class QuestionController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $this->authen($request);
         if (Question::where('question_id', $id)->exists()) {
             $question = Question::find($id);
 
@@ -90,8 +94,9 @@ class QuestionController extends Controller
      * @param $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
+        $this->authen($request);
         if(Question::where('question_id', $id)->exists()) {
             $question = Question::find($id);
             $question->delete();
@@ -106,7 +111,11 @@ class QuestionController extends Controller
         }
     }
 
-    public function showPieChart() {
+    /**
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
+    public function showPieChart(Request $request) {
+        $this->authen($request);
         $questions = Question::get();
         $count_questions = count($questions);
         $count_questions_answers = 0;
@@ -118,7 +127,11 @@ class QuestionController extends Controller
         return response($result, 200);
     }
 
-    public function showBarChart() {
+    /**
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
+    public function showBarChart(Request $request) {
+        $this->authen($request);
         $questions = Question::get();
         $result = [];
         foreach ($questions as $question) {
@@ -126,5 +139,13 @@ class QuestionController extends Controller
             array_push($result, ["question_id"=>$question->question_id, "question_name"=>$question->name, "count_answers"=>$count_answers]);
         }
         return response($result, 200);
+    }
+
+    /**
+     * @param $request
+     */
+    public function authen($request) {
+        $authorization = $request->header('Authorization');
+        if($authorization !== getenv('API_KEY')) die('Not logged user');
     }
 }
