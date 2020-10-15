@@ -42,6 +42,10 @@ Route::get('answers',
     'App\Http\Controllers\Api\AnswerController@index'
 );
 
-//Route::post('questions/{secret}',
-//    'App\Http\Controllers\Api\AnswerController@store'
-//);
+Route::get('answers/statistics/pie-chart',
+    'App\Http\Controllers\Api\QuestionController@showPieChart'
+);
+
+Route::get('answers/statistics/bar-chart',
+    'App\Http\Controllers\Api\QuestionController@showBarChart'
+);

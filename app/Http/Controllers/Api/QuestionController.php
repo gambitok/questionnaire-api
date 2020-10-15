@@ -34,10 +34,8 @@ class QuestionController extends Controller
     public function show($id)
     {
         if (Question::where('secret', $id)->exists()) {
-            $question = Question::where('secret', $id)->get()->toJson(JSON_PRETTY_PRINT);
-//            $question = Question::where('secret', $id)->get();
+            $question = Question::where('secret', $id)->get();
             return response($question, 200);
-//            return view('questions/show')->with('question', $question);
         } else {
             return response()->json([
                 "message" => "Question not found"
@@ -106,5 +104,27 @@ class QuestionController extends Controller
                 "message" => "Question not found"
             ], 404);
         }
+    }
+
+    public function showPieChart() {
+        $questions = Question::get();
+        $count_questions = count($questions);
+        $count_questions_answers = 0;
+        foreach ($questions as $question) {
+            $answers = Answer::where('question_id', $question->question_id)->get();
+            count($answers)==0 ?: $count_questions_answers++;
+        }
+        $result = ["count_questions"=>$count_questions, "count_questions_answers"=>$count_questions_answers];
+        return response($result, 200);
+    }
+
+    public function showBarChart() {
+        $questions = Question::get();
+        $result = [];
+        foreach ($questions as $question) {
+            $count_answers = count(Answer::where('question_id', $question->question_id)->get());
+            array_push($result, ["question_id"=>$question->question_id, "question_name"=>$question->name, "count_answers"=>$count_answers]);
+        }
+        return response($result, 200);
     }
 }
